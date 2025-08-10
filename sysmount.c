@@ -8,7 +8,7 @@
 #include <sys/mount.h>
 
 #define MT "sysmount"
-#define MT_CALL "__call"
+#define MM_CALL "__call"
 
 #define ADDCONST(L, name)   \
   lua_pushinteger(L, name); \
@@ -22,7 +22,7 @@ static int push_luaerror(lua_State *L) {
   return 3;
 }
 
-int l_umount(lua_State *L) {
+static int l_umount(lua_State *L) {
 	const char *target = luaL_checkstring(L, 2);
  	int flags = luaL_optinteger(L, 3, 0);
 	int ret;
@@ -39,7 +39,7 @@ int l_umount(lua_State *L) {
 	return 1;
 }
 
-int l_mount(lua_State *L) {
+static int l_mount(lua_State *L) {
   const char *source = luaL_optstring(L, 2, NULL);
   const char *target = luaL_checkstring(L, 3);
   const char *fstype = luaL_optstring(L, 4, NULL);
@@ -57,7 +57,7 @@ int luaopen_sysmount_umount(lua_State *L) {
 	lua_newtable(L);
 	luaL_newmetatable(L, MT);
 	lua_pushcfunction(L, l_umount);
-	lua_setfield(L, -2, MT_CALL);
+	lua_setfield(L, -2, MM_CALL);
 	lua_setmetatable(L, -2);
 
 	ADDCONST(L, MNT_FORCE);
@@ -72,7 +72,7 @@ int luaopen_sysmount_mount(lua_State *L) {
   lua_newtable(L);
   luaL_newmetatable(L, MT);
   lua_pushcfunction(L, l_mount);
-  lua_setfield(L, -2, MT_CALL);
+  lua_setfield(L, -2, MM_CALL);
   lua_setmetatable(L, -2);
 
   ADDCONST(L, MS_DIRSYNC);
