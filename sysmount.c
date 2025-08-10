@@ -39,6 +39,19 @@ int l_umount(lua_State *L) {
 	return 1;
 }
 
+int l_mount(lua_State *L) {
+  const char *source = luaL_optstring(L, 2, NULL);
+  const char *target = luaL_checkstring(L, 3);
+  const char *fstype = luaL_optstring(L, 4, NULL);
+  int mntflags = luaL_checkinteger(L, 5);
+  const char *data = luaL_optstring(L, 6, NULL);
+
+  if (mount(source, target, fstype, mntflags, data) != 0)
+    return push_luaerror(L);
+
+  lua_pushboolean(L, 1);
+  return 1;
+}
 
 int luaopen_sysmount_umount(lua_State *L) {
 	lua_newtable(L);
@@ -53,20 +66,6 @@ int luaopen_sysmount_umount(lua_State *L) {
 	ADDCONST(L, UMOUNT_NOFOLLOW);
 	
 	return 1;
-}
-
-int l_mount(lua_State *L) {
-  const char *source = luaL_optstring(L, 2, NULL);
-  const char *target = luaL_checkstring(L, 3);
-  const char *fstype = luaL_optstring(L, 4, NULL);
-  int mntflags = luaL_checkinteger(L, 5);
-  const char *data = luaL_optstring(L, 6, NULL);
-
-  if (mount(source, target, fstype, mntflags, data) != 0)
-    return push_luaerror(L);
-
-  lua_pushboolean(L, 1);
-  return 1;
 }
 
 int luaopen_sysmount_mount(lua_State *L) {
